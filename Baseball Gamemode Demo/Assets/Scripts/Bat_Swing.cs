@@ -14,11 +14,17 @@ public class Bat_Swing : MonoBehaviour
 
     private Vector3 startSwing = new Vector3(-45, -45, 0);   // Bat cocked back (ready position)
     private Vector3 contactSwing = new Vector3(0, -90, 0); // Contact point
-    private Vector3 endSwing = new Vector3(-45, -175, 0);    // Follow through
+    private Vector3 endSwing = new Vector3(-25, -165, 0);    // Follow through
+
+    private Vector3 startPos = new Vector3(0, 0, -0.4f);    // Back and to the side
+    private Vector3 contactPos = new Vector3(0, 0, 0);          // Center (original position)
+    private Vector3 endPos = new Vector3(-0.6f, 0, 0.2f);       // Forward and across
 
     private bool isSwinging = false;
 
     Quaternion startingRotation;
+
+    Vector3 startingPosition;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,7 +34,10 @@ public class Bat_Swing : MonoBehaviour
         batSwingAction.Enable();
 
         startingRotation = Quaternion.Euler(startSwing);
+        startingPosition = bat.localPosition;
+        
         bat.localRotation = startingRotation;
+        bat.localPosition = startingPosition + startPos;
     }
 
     // Update is called once per frame
@@ -55,45 +64,52 @@ public class Bat_Swing : MonoBehaviour
         Quaternion contactRot = Quaternion.Euler(contactSwing);
         Quaternion endRot = Quaternion.Euler(endSwing);
 
-        // Full swing arc: start -> contact -> follow through
         while (elapsed < swingDuration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / swingDuration;
             
-            if (t < 0.5f)
+            if (t < 0.6f)
             {
-                // First half: windup to contact
-                float halfT = t * 2f;
+                float halfT = t / 0.6f;
+                halfT = halfT * halfT;
+                
                 bat.localRotation = Quaternion.Slerp(startRot, contactRot, halfT);
+                // Add position animation
+                bat.localPosition = Vector3.Lerp(startingPosition + startPos, startingPosition + contactPos, halfT);
             }
             else
             {
-                // Second half: contact to follow through
-                float halfT = (t - 0.5f) * 2f;
+                float halfT = (t - 0.6f) / 0.4f;
+                halfT = 1 - (1 - halfT) * (1 - halfT);
+                
                 bat.localRotation = Quaternion.Slerp(contactRot, endRot, halfT);
+                // Add position animation
+                bat.localPosition = Vector3.Lerp(startingPosition + contactPos, startingPosition + endPos, halfT);
             }
             
             yield return null;
         }
 
         bat.localRotation = endRot;
-
+        bat.localPosition = startingPosition + endPos;
         Debug.Log("Swing Complete");
 
-        // Return to ready position
         yield return new WaitForSeconds(0.5f);
         
+        // Return to ready position
         elapsed = 0f;
         while (elapsed < 0.5f)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / 0.5f;
             bat.localRotation = Quaternion.Slerp(endRot, startRot, t);
+            bat.localPosition = Vector3.Lerp(startingPosition + endPos, startingPosition + startPos, t);
             yield return null;
         }
 
         bat.localRotation = startRot;
+        bat.localPosition = startingPosition + startPos;
         isSwinging = false;
     }
 
