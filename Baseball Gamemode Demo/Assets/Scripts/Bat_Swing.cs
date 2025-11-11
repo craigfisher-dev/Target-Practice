@@ -42,12 +42,15 @@ public class Bat_Swing : MonoBehaviour
 
         Debug.Log("Swing Complete");
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
+
+        Debug.Log("Resetting");
 
         // Return to ready position
         isSwinging = false;
+
+        animator.SetBool("isSwinging", isSwinging);
         
-         animator.SetBool("isSwinging", isSwinging);
     }
 
     void FixedUpdate()
