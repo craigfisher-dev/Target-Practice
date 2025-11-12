@@ -11,7 +11,9 @@ public class Bat_Swing : MonoBehaviour
     [SerializeField] private Animator animator;
     InputAction batSwingAction;
 
-    private bool isSwinging = false;
+    [SerializeField] public bool Coroutine_Running = false;
+
+    [SerializeField] private bool isSwinging = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,7 +27,7 @@ public class Bat_Swing : MonoBehaviour
     void Update()
     {
         // Left mouse button
-        if (batSwingAction.IsPressed() && !isSwinging)
+        if (batSwingAction.IsPressed() && !isSwinging && !Coroutine_Running)
         {
             StartCoroutine(Bat_Swing_On_Click());
         }
@@ -36,13 +38,17 @@ public class Bat_Swing : MonoBehaviour
 
    private IEnumerator Bat_Swing_On_Click()
     {
+
+        Coroutine_Running = true;
+
         isSwinging = true;
 
         animator.SetBool("isSwinging", isSwinging);
 
         Debug.Log("Swing Complete");
 
-        yield return new WaitForSeconds(2f);
+        // Have the full animation play
+        yield return new WaitForSeconds(3f);
 
         Debug.Log("Resetting");
 
@@ -50,7 +56,8 @@ public class Bat_Swing : MonoBehaviour
         isSwinging = false;
 
         animator.SetBool("isSwinging", isSwinging);
-        
+
+        Coroutine_Running = false;
     }
 
     void FixedUpdate()
