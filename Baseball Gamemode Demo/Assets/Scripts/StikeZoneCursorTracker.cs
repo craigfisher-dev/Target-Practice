@@ -3,38 +3,31 @@ using UnityEngine.InputSystem;
 
 public class StikeZoneCursorTracker : MonoBehaviour
 {
+    [SerializeField] private BoxCollider visualStrikeZone;  // Your actual strike zone (what player sees)
+    
+    private Plane strikeZonePlane;
+    private Vector3 worldPosition;
 
-    [SerializeField] public BoxCollider swingZoneColider;
-
-    [SerializeField] public Vector3 worldPosition;
-    [SerializeField] public Vector2 screenPosition;
-
-    [SerializeField] public LayerMask layerToHit;
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Confined; // Keep mouse in game window
         
+        strikeZonePlane = new Plane(-Camera.main.transform.forward, visualStrikeZone.transform.position);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // Mouses x,y position in vector2
-        screenPosition = Mouse.current.position.ReadValue();
-
-        // Ray from main camera to mouse position
+        Vector2 screenPosition = Mouse.current.position.ReadValue();
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
-
-        // Cast the ray and check if it hits anything on the specified layer
-        if (Physics.Raycast(ray, out RaycastHit hitData, 100, layerToHit))
+        
+        if (strikeZonePlane.Raycast(ray, out float enter))
         {
-            // If the raycast hits something, get the 3D world position of the hit point
-            worldPosition = hitData.point;
+            Vector3 targetPosition = ray.GetPoint(enter);
+            
+            // Clamp to the visualStrikeZone bounds
+            worldPosition = visualStrikeZone.ClosestPoint(targetPosition);
         }
-
-        // Move this object to the world position where the ray hit
+        
         transform.position = worldPosition;
     }
 }

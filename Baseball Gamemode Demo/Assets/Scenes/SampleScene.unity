@@ -264,7 +264,7 @@ Transform:
   m_GameObject: {fileID: 260903479}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 1.342, y: 1.094, z: 0.566}
+  m_LocalPosition: {x: 0.886, y: 1.094, z: 0.566}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -289,7 +289,7 @@ MonoBehaviour:
     m_SourceObjects:
       m_Length: 1
       m_Item0:
-        transform: {fileID: 754592554}
+        transform: {fileID: 1916335827}
         weight: 1
       m_Item1:
         transform: {fileID: 0}
@@ -1037,7 +1037,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &754592554
 Transform:
   m_ObjectHideFlags: 0
@@ -1454,12 +1454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1685e272fecbf9545973e41063fab140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swingZoneColider: {fileID: 1708457888}
-  worldPosition: {x: 0, y: 0, z: 0}
-  screenPosition: {x: 0, y: 0}
-  layerToHit:
-    serializedVersion: 2
-    m_Bits: 128
+  visualStrikeZone: {fileID: 1708457888}
 --- !u!1001 &1165576677
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2197,6 +2192,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 838361003}
+  Coroutine_Running: 0
+  isSwinging: 0
 --- !u!114 &919132148311060654
 MonoBehaviour:
   m_ObjectHideFlags: 0
